@@ -11,9 +11,9 @@
 	<Shape>
 		<Appearance DEF="Material_Front">
 			<Material
-				ambientIntensity="1"
+				ambientIntensity="0.0"
 				diffuseColor="1 1 1"
-				shininess="7.8125">
+				shininess="0.0">
 				<ImageTexture DEF="Image_Front" containerField="diffuseTexture"
 					url='"woe-223-decadent-dragon.png"' />
 			</Material>
@@ -36,9 +36,9 @@
 	<Shape>
 		<Appearance DEF="Material_Back">
 			<Material
-				ambientIntensity="1"
+				ambientIntensity="0.0"
 				diffuseColor="1 1 1"
-				shininess="7.8125">
+				shininess="0.0">
 				<ImageTexture DEF="Image_Back" containerField="diffuseTexture"
 					url='"back.png"' />
 			</Material>
