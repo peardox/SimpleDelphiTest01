@@ -220,7 +220,7 @@ var
   MyImageTexture: TImageTextureNode;
 begin
   MyImageTexture := Scene.Node('Image_Front') as TImageTextureNode;
-  MyImageTexture.LoadFromImage(MaskedImage(datadir + 'cards/set_' + Expansion + '/' + ImageID + '.jpg'), True, ''); // datadir + 'cards/set_' + Expansion + '/' + ImageID + '.jpg');
+  MyImageTexture.LoadFromImage(MaskedImage(datadir + 'cards/set_' + Expansion + '/' + ImageID + '.jpg'), True, { ''); // } datadir + 'cards/set_' + Expansion + '/' + ImageID + '.jpg');
 end;
 
 end.

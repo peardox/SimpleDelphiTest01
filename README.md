@@ -18,8 +18,9 @@ MakeCard switches out the Image_Front texture from data/static/card.x3d replacin
 
 The CGE window's onclick handler calls MakeCard. It SHOULD cycle thru eight distinct images. The Dragon card you get on load should never be seen after the first click (it's not in the data/cards dir, only in data/static as a initial image placeholder)
 
-As provided the UpdateUrl is an empty string which has the effect of visibly doing nothing when MakeCard is called
+As provided the image is changed to the image we're trying to get to then we get that one BUT NOT with the rounded corners returned from MaskedImage (it's subtle - no corners)
+
+Remove the comments on line 223 and UpdateUrl is an empty string which has the effect of visibly doing nothing when MakeCard is called
 
 If UpdateUrl is changed to some random junk string an exception will be raised if run in the debugger
 
-If UpdateUrl is changed to the image we're trying to get to then we get that one BUT NOT with the rounded corners returned from MaskedImage
