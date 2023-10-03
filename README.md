@@ -20,7 +20,7 @@ The CGE window's onclick handler calls MakeCard. It SHOULD cycle thru eight dist
 
 As provided the image is changed to the image we're trying to get to then we get that one BUT NOT with the rounded corners returned from MaskedImage (it's subtle - no corners)
 
-Remove the comments on line 223 and UpdateUrl is an empty string which has the effect of visibly doing nothing when MakeCard is called
+Remove the comments on line 235 and UpdateUrl becomes an empty string which has the effect of visibly doing nothing when MakeCard is called
 
 If UpdateUrl is changed to some random junk string an exception will be raised if run in the debugger
 
