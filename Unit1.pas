@@ -7,7 +7,7 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Controls.Presentation, fmx.castlecontrol, CastleUIControls, CastleVectors,
   CastleScene, CastleViewport, CastleTransform, CastleProjection, CastleGLUtils,
-  CastleColors, CastleImages, CastleKeysMouse, X3DNodes;
+  CastleColors, CastleImages, CastleKeysMouse, CastleControls, X3DNodes;
 
 type
   TCastleSceneHelper = class helper for TCastleScene
@@ -24,6 +24,7 @@ type
     Camera: TCastleCamera;
     CameraLight: TCastleDirectionalLight;
     Viewport: TCastleViewport;
+    VPBackImage: TCastleImageControl;
     function LoadScene(filename: String): TCastleScene;
     procedure LoadViewport;
     function  CreateDirectionalLight(LightPos: TVector3): TCastleDirectionalLight;
@@ -128,6 +129,15 @@ end;
 
 procedure TCastleApp.LoadViewport;
 begin
+  VPBackImage := TCastleImageControl.Create(Owner);
+  VPBackImage.OwnsImage := True;
+  VPBackImage.Url := datadir + 'static/wallpaper.png';
+  VPBackImage.Stretch := True;
+  VPBackImage.Width := Container.Width;
+  VPBackImage.Height := Container.Height;
+
+  InsertFront(VPBackImage);
+
   Viewport := TCastleViewport.Create(Owner);
   Viewport.FullSize := False;
   Viewport.Width := Container.Width;
@@ -155,6 +165,8 @@ procedure TCastleApp.Resize;
 begin
   Viewport.Width := Container.Width;
   Viewport.Height := Container.Height;
+  VPBackImage.Width := Container.Width;
+  VPBackImage.Height := Container.Height;
 end;
 
 procedure TCastleApp.Start;
