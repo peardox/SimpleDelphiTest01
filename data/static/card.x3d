@@ -19,7 +19,7 @@
 			</Material>
 		</Appearance>
 		<IndexedFaceSet
-			solid="false"
+			solid="true"
 			convex="false"
 			coordIndex="0 1 2 3 -1"
 			creaseAngle="0.5"
@@ -44,7 +44,7 @@
 			</Material>
 		</Appearance>
 		<IndexedFaceSet
-			solid="false"
+			solid="true"
 			convex="false"
 			coordIndex="4 5 6 7 -1"
 			creaseAngle="0.5"
