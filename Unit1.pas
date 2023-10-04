@@ -7,11 +7,14 @@ uses
   FMX.Types, FMX.Controls, FMX.Forms, FMX.Graphics, FMX.Dialogs,
   FMX.Controls.Presentation, fmx.castlecontrol, CastleUIControls, CastleVectors,
   CastleScene, CastleViewport, CastleTransform, CastleProjection, CastleGLUtils,
-  CastleColors, CastleImages, CastleKeysMouse, CastleControls, X3DNodes;
+  CastleColors, CastleImages, CastleKeysMouse, CastleControls, X3DNodes,
+  CastleRenderOptions, FMX.StdCtrls;
 
 type
   TCastleSceneHelper = class helper for TCastleScene
     function Normalize: Boolean;
+    function ApplyShader: TEffectNode;
+    function AddShader: Boolean;
   end;
 
   TCastleApp = class(TCastleView)
@@ -34,13 +37,17 @@ type
   end;
 
   TForm1 = class(TForm)
+    Panel1: TPanel;
+    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure GLWinClick(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     GLWin: TCastleControl;
     GLView: TCastleApp;
     CurrentCard: Integer;
+    ShaderState: Integer;
   public
     { Public declarations }
   end;
@@ -68,9 +75,45 @@ implementation
 uses Math;
 
 
+procedure TForm1.Button1Click(Sender: TObject);
+var
+  s: TEffectNode;
+begin
+if Assigned(GLView.ActiveScene) then
+  begin
+    if ShaderState = 0 then
+      begin
+        if GLView.ActiveScene.AddShader then
+          ShaderState := 1;
+        Button1.Text := 'Disable Shader';
+      end
+    else if ShaderState = 1 then
+      begin
+        s := GLView.ActiveScene.Node('RoundedCorners') as TEffectNode;
+        if Assigned(s) then
+          begin
+            s.Enabled := False;
+            ShaderState := 2;
+            Button1.Text := 'Enable Shader';
+          end;
+      end
+    else if ShaderState = 2 then
+      begin
+        s := GLView.ActiveScene.Node('RoundedCorners') as TEffectNode;
+        if Assigned(s) then
+          begin
+            s.Enabled := True;
+            ShaderState := 1;
+            Button1.Text := 'Disable Shader';
+          end;
+      end;
+  end;
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   CurrentCard := 0;
+  ShaderState := 0;
   GLWin := TCastleControl.Create(Self);
   GLWin.OnClick := GLWinClick;
   GLWin.Parent := Form1;
@@ -208,6 +251,62 @@ begin
           end;
       end;
     end;
+end;
+
+function TCastleSceneHelper.ApplyShader: TEffectNode;
+var
+  ShaderEffect: TEffectNode;
+  FragmentPart: TEffectPartNode;
+begin
+  Result := Nil;
+  try
+    ShaderEffect := TEffectNode.Create;
+    ShaderEffect.Language := slGLSL;
+    ShaderEffect.X3DName := 'RoundedCorners';
+    FragmentPart := TEffectPartNode.Create;
+    FragmentPart.ShaderType := stFragment;
+    FragmentPart.SetUrl([datadir + 'static/frameShader.fs']);
+    ShaderEffect.SetParts([FragmentPart]);
+    ShaderEffect.Enabled := False;
+    Result := ShaderEffect;
+  except
+    on E : Exception do
+      begin
+        ShowMessage('Oops #2' + E.ClassName + ' - ' + E.Message);
+       end;
+  end;
+end;
+
+function TCastleSceneHelper.AddShader: Boolean;
+var
+  TextureNode: TImageTextureNode;
+  ShaderEffect: TEffectNode;
+begin
+  Result := False;
+  try
+    TextureNode := Node('Image_Front') as TImageTextureNode;
+    if not Assigned(TextureNode) then
+      ShowMessage('Bad Shader')
+    else
+      begin
+        ShaderEffect := ApplyShader;
+        if Assigned(ShaderEffect) then
+          begin
+            ShaderEffect.Enabled := True;
+            TextureNode.SetEffects([ShaderEffect]);
+            Result := True;
+          end
+        else
+          begin
+            ShowMessage('AddShader Failed');
+          end;
+      end;
+  except
+    on E : Exception do
+      begin
+        ShowMessage('Oops #3' + E.ClassName + ' - ' + E.Message);
+       end;
+  end;
 end;
 
 function MaskedImage(ImageFile: String): TCastleImage;
