@@ -9,14 +9,28 @@
 </head>
 <Scene>
 	<Shape>
-		<Appearance DEF="Material_Front">
+		<Appearance DEF="Material_Front" alphaMode="MASK">
 			<Material
 				ambientIntensity="0.0"
 				diffuseColor="1 1 1"
 				shininess="0.0">
 				<ImageTexture DEF="Image_Front" containerField="diffuseTexture"
-					url='"woe-223-decadent-dragon.png"' />
+					url='"DummyCard.jpg"' />
 			</Material>
+			<Effect containerField="effects"
+				language="GLSL">
+				<field accessType="initializeOnly" type="SFNode" name="mask_texture">
+				<ImageTexture containerField="mask_texture"
+					url='"frameAlpha.png"'>
+					<TextureProperties
+						magnificationFilter="NEAREST_PIXEL"
+						minificationFilter="NEAREST_PIXEL" />
+				</ImageTexture>
+				</field>
+				<EffectPart
+					type="FRAGMENT"
+					url='"frameShader.fs"' />
+			</Effect>
 		</Appearance>
 		<IndexedFaceSet
 			solid="true"
@@ -34,14 +48,28 @@
 		</IndexedFaceSet>
 	</Shape>
 	<Shape>
-		<Appearance DEF="Material_Back">
+		<Appearance DEF="Material_Back" alphaMode="MASK">
 			<Material
 				ambientIntensity="0.0"
 				diffuseColor="1 1 1"
 				shininess="0.0">
 				<ImageTexture DEF="Image_Back" containerField="diffuseTexture"
-					url='"back.png"' />
+					url='"back.jpg"' />
 			</Material>
+			<Effect containerField="effects"
+				language="GLSL">
+				<field accessType="initializeOnly" type="SFNode" name="mask_texture">
+				<ImageTexture containerField="mask_texture"
+					url='"frameAlpha.png"'>
+					<TextureProperties
+						magnificationFilter="NEAREST_PIXEL"
+						minificationFilter="NEAREST_PIXEL" />
+				</ImageTexture>
+				</field>
+				<EffectPart
+					type="FRAGMENT"
+					url='"frameShader.fs"' />
+			</Effect>
 		</Appearance>
 		<IndexedFaceSet
 			solid="true"

@@ -13,8 +13,6 @@ uses
 type
   TCastleSceneHelper = class helper for TCastleScene
     function Normalize: Boolean;
-    function ApplyShader: TEffectNode;
-    function AddShader: Boolean;
   end;
 
   TCastleApp = class(TCastleView)
@@ -37,11 +35,8 @@ type
   end;
 
   TForm1 = class(TForm)
-    Panel1: TPanel;
-    Button1: TButton;
     procedure FormCreate(Sender: TObject);
     procedure GLWinClick(Sender: TObject);
-    procedure Button1Click(Sender: TObject);
   private
     { Private declarations }
     GLWin: TCastleControl;
@@ -74,41 +69,6 @@ implementation
 
 uses Math;
 
-
-procedure TForm1.Button1Click(Sender: TObject);
-var
-  s: TEffectNode;
-begin
-if Assigned(GLView.ActiveScene) then
-  begin
-    if ShaderState = 0 then
-      begin
-        if GLView.ActiveScene.AddShader then
-          ShaderState := 1;
-        Button1.Text := 'Disable Shader';
-      end
-    else if ShaderState = 1 then
-      begin
-        s := GLView.ActiveScene.Node('RoundedCorners') as TEffectNode;
-        if Assigned(s) then
-          begin
-            s.Enabled := False;
-            ShaderState := 2;
-            Button1.Text := 'Enable Shader';
-          end;
-      end
-    else if ShaderState = 2 then
-      begin
-        s := GLView.ActiveScene.Node('RoundedCorners') as TEffectNode;
-        if Assigned(s) then
-          begin
-            s.Enabled := True;
-            ShaderState := 1;
-            Button1.Text := 'Disable Shader';
-          end;
-      end;
-  end;
-end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
@@ -253,77 +213,20 @@ begin
     end;
 end;
 
-function TCastleSceneHelper.ApplyShader: TEffectNode;
-var
-  ShaderEffect: TEffectNode;
-  FragmentPart: TEffectPartNode;
+function MaskedImage(ImageFile: String): TCastleImage; // This will do something real later
 begin
   Result := Nil;
   try
-    ShaderEffect := TEffectNode.Create;
-    ShaderEffect.Language := slGLSL;
-    ShaderEffect.X3DName := 'RoundedCorners';
-    FragmentPart := TEffectPartNode.Create;
-    FragmentPart.ShaderType := stFragment;
-    FragmentPart.SetUrl([datadir + 'static/frameShader.fs']);
-    ShaderEffect.SetParts([FragmentPart]);
-    ShaderEffect.Enabled := False;
-    Result := ShaderEffect;
-  except
-    on E : Exception do
-      begin
-        ShowMessage('Oops #2' + E.ClassName + ' - ' + E.Message);
-       end;
-  end;
-end;
-
-function TCastleSceneHelper.AddShader: Boolean;
-var
-  TextureNode: TImageTextureNode;
-  ShaderEffect: TEffectNode;
-begin
-  Result := False;
-  try
-    TextureNode := Node('Image_Front') as TImageTextureNode;
-    if not Assigned(TextureNode) then
-      ShowMessage('Bad Shader')
+    if not FileExists(Imagefile) then
+      ShowMessage('Missing image : ' + ImageFile)
     else
-      begin
-        ShaderEffect := ApplyShader;
-        if Assigned(ShaderEffect) then
-          begin
-            ShaderEffect.Enabled := True;
-            TextureNode.SetEffects([ShaderEffect]);
-            Result := True;
-          end
-        else
-          begin
-            ShowMessage('AddShader Failed');
-          end;
-      end;
+      Result := LoadImage(ImageFile, [TRGBImage]) as TCastleImage;
   except
     on E : Exception do
       begin
-        ShowMessage('Oops #3' + E.ClassName + ' - ' + E.Message);
+        ShowMessage('Oops #4' + E.ClassName + ' - ' + E.Message);
        end;
   end;
-end;
-
-function MaskedImage(ImageFile: String): TCastleImage;
-var
-  rgbaTexture: TRGBAlphaImage;
-  rgbImage: TCastleImage;
-  mask: TCastleImage;
-begin
-  if not FileExists(Imagefile) then
-    ShowMessage('Missing image : ' + ImageFile);
-  rgbImage := LoadImage(ImageFile, [TRGBImage]) as TCastleImage;
-  mask := LoadImage(datadir + 'static/frame_alpha.png', [TGrayscaleImage]) as TCastleImage;
-  rgbaTexture := TRGBAlphaImage.Create(rgbImage.Width, rgbImage.Height);
-  rgbaTexture.Compose(TRGBImage(rgbImage), TGrayscaleImage(mask));
-  FreeAndNil(mask);
-  FreeAndNil(rgbImage);
-  Result := TCastleImage(rgbaTexture);
 end;
 
 procedure TCastleApp.MakeCard(var Scene: TCastleScene; const Expansion: String; const ImageID: String);

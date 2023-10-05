@@ -1,7 +1,6 @@
-void PLUG_main_texture_apply(
-   inout vec4 fragment_color,
-   const in vec3 normal)
-{
-  float avgcolor = (fragment_color[0] * 0.2126) + (fragment_color[1] * 0.7152) + (fragment_color[2] * 0.0722); // Grayscale
-  fragment_color.xyz = vec3(avgcolor, (avgcolor * 0.5893), (avgcolor * 0.1785)); // Sepia Tint
+uniform sampler2D mask_texture;
+
+void PLUG_texture_color(inout vec4 texture_color, const in sampler2D alpha_texture, const in vec4 tex_coord) {
+  float alpha = texture2D(mask_texture, tex_coord.st).r; // r=g=b so pick one...
+  texture_color = vec4(texture_color.xyz, alpha);
 }
