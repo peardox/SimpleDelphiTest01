@@ -1,6 +1,7 @@
 unit Unit1;
 
 // {$define mountzip}
+// {$define dataoverride}
 
 interface
 
@@ -330,6 +331,10 @@ begin
     RegisterUrlProtocol('zip-' + Identifier, PackedDataReader.ReadUrl, nil)
   else
     raise Exception.Create('Zip not found');
+
+{$ifdef dataoverride}
+  ApplicationDataOverride := 'zip-'  + Identifier + ':/';
+{$endif}
 
 end;
 

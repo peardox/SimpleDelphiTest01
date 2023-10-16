@@ -20,7 +20,16 @@ The CGE window's onclick handler calls MakeCard. It SHOULD cycle thru eight dist
 
 As provided the image is changed to the image we're trying to get to then we get that one BUT NOT with the image returned from MaskedImage (really bad naming now)
 
-Remove the comments on line 337 and UpdateUrl becomes an empty string which has the effect of visibly doing nothing when MakeCard is called
+Remove the comments on line 318 and UpdateUrl becomes an empty string which has the effect of visibly doing nothing when MakeCard is called
 
 If UpdateUrl is changed to some random junk string an exception will be raised if run in the debugger
 
+<u>Added - 16th Oct 2023</u>
+
+Trying to load from a pre-prepared Zip file so built this problem into the other issue
+
+There are two commented-out ifdefs at the start. Remove the comments - notably enable the mountzip ifdef and the new issue will appear. Downloading from protocol not supported
+
+MakeCard has been altered to take into account the availability of a Zip file or not
+
+The CastleDataInformation.xml problem may stem from the mountzip issue
