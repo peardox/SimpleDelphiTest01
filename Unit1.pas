@@ -3,6 +3,9 @@ unit Unit1;
 // {$define mountzip}
 // {$define dataoverride}
 
+// Seperate test for inline mask failing
+//  {$define testmask}
+
 interface
 
 uses
@@ -246,7 +249,11 @@ begin
   inherited;
   ActiveScene := nil;
   LoadViewport;
+  {$ifdef testmask}
+  ActiveScene := LoadScene(datadir + 'mask.x3dv'); // Create proper scene
+  {$else}
   ActiveScene := LoadScene(datadir + 'static/card.x3d'); // Create proper scene
+  {$endif}
   Viewport.Items.Add(ActiveScene);
 end;
 
